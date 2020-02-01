@@ -9,7 +9,7 @@ from fastai import *
 from fastai.vision import *
 
 model_file_url = 'https://www.dropbox.com/s/dz8v7kwk89zbiqx/export.pkl?dl=1'
-model_file_name = 'export'
+model_file_name = 'export.pkl'
 classes = ['plastics','metal','glass']
 path = Path(__file__).parent
 
@@ -25,11 +25,11 @@ async def download_file(url, dest):
             with open(dest, 'wb') as f: f.write(data)
 
 async def setup_learner():
-    await download_file(model_file_url, path/'models'/f'{model_file_name}.pth')
-    data_bunch = ImageDataBunch.single_from_classes(path, classes,
-        ds_tfms=get_transforms(), size=224).normalize(imagenet_stats)
-    learn = cnn_learner(data_bunch, models.resnet34, pretrained=False)
-    learn.load(model_file_name)
+    await download_file(model_file_url, path/model_file_name)
+    # data_bunch = ImageDataBunch.single_from_classes(path, classes,
+    #     ds_tfms=get_transforms(), size=224).normalize(imagenet_stats)
+    # learn = cnn_learner(data_bunch, models.resnet50, pretrained=False)
+    learn = load_learner(path, model_file_name)
     return learn
 
 loop = asyncio.get_event_loop()
